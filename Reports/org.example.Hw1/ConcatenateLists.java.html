@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConcatenateLists.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Unnamed Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.example.Hw1</a> &gt; <span class="el_source">ConcatenateLists.java</span></div><h1>ConcatenateLists.java</h1><pre class="source lang-java linenums">package org.example.Hw1;
+
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="nc" id="L6">public class ConcatenateLists {</span>
+
+    private static final int N_MAX =14;
+
+    /**
+     * Concatena le stringhe nella stessa posizione tra due liste di stringhe,
+     * rispettando i seguenti vincoli:
+     * Se una delle liste è nulla, restituisce null.
+     * Se le liste non hanno la stessa dimensione tratta le stringhe che non sono presenti come empty
+     * Rimuove gli spazi e la parola &quot;no&quot; dalle stringhe della seconda lista.
+     * Nelle stringhe della prima lista, se un numero è attaccato a una parola senza spazio, aggiunge uno spazio.
+     * Se la lunghezza della stringa risultante è superiore a 20 caratteri, la trasforma in camel case se incontra
+     * uno spazio tra stringhe nella stringa concatenata
+     * Se una delle due liste sono &gt; di N_MAX lancia eccezione
+     * @param listOfLeftStrings  La prima lista di stringhe da concatenare.
+     * @param listOfRightStrings La seconda lista di stringhe da concatenare.
+     * @return Una lista di stringhe ottenuta concatenando le stringhe nelle stesse posizioni
+     * tra le due liste, seguendo i vincoli specificati.
+     */
+    public static List&lt;String&gt; concatenateLists(List&lt;String&gt; listOfLeftStrings, List&lt;String&gt; listOfRightStrings) {
+
+        // Verifica se una delle liste è nulla
+<span class="fc bfc" id="L28" title="All 4 branches covered.">        if (listOfLeftStrings == null || listOfRightStrings == null) {</span>
+<span class="fc" id="L29">            return null;</span>
+        }
+
+<span class="fc" id="L32">        List&lt;String&gt; listLeft= new ArrayList&lt;&gt;(listOfLeftStrings);</span>
+<span class="fc" id="L33">        List&lt;String&gt; listRight= new ArrayList&lt;&gt;(listOfRightStrings);</span>
+
+        // Verifica se le liste hanno lunghezza maggiore di n
+<span class="fc bfc" id="L36" title="All 4 branches covered.">        if (listLeft.size() &gt; N_MAX || listRight.size() &gt; N_MAX) {</span>
+<span class="fc" id="L37">            throw new IllegalArgumentException(&quot;Le liste non possono avere dimensione maggiore di &quot; + N_MAX);</span>
+        }
+
+<span class="fc" id="L40">        int max=addEmptyStringsToMinorList(listLeft, listRight);</span>
+<span class="fc" id="L41">        List&lt;String&gt; listOfConcatenatedStrings = new ArrayList&lt;&gt;();</span>
+
+        // Concatena le stringhe nella stessa posizione tra le due liste
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (int i = 0; i &lt; max; i++) {</span>
+<span class="fc" id="L45">            String leftString = addSpaceToNumberInString(listLeft.get(i));</span>
+<span class="fc" id="L46">            String rightString = removeSpacesAndNoFromRightString(listRight.get(i));</span>
+
+<span class="fc" id="L48">            String concatenatedString = leftString + rightString;</span>
+
+            // Se la lunghezza della stringa risultante è superiore a 20 caratteri, trasformala in camel case
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (concatenatedString.length() &gt; 20) {</span>
+<span class="fc" id="L52">                concatenatedString = toCamelCase(concatenatedString);</span>
+            }
+
+<span class="fc" id="L55">            listOfConcatenatedStrings.add(concatenatedString);</span>
+        }
+
+<span class="fc" id="L58">        return listOfConcatenatedStrings;</span>
+    }
+
+    /**
+     * Aggiunge uno spazio tra una parola e un numero attaccato senza spazio nella stringa di input.
+     *
+     * @param inputString La stringa di input.
+     * @return La stringa di input con uno spazio aggiunto tra una parola e un numero attaccato senza spazio.
+     */
+    private static String addSpaceToNumberInString(String inputString) {
+<span class="fc" id="L68">        StringBuilder stringBuilder = new StringBuilder(inputString);</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (int j = 0; j &lt; inputString.length(); j++) {</span>
+<span class="fc" id="L71">            char currentChar = inputString.charAt(j);</span>
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            if(Character.isDigit(currentChar)) {</span>
+<span class="fc bfc" id="L74" title="All 6 branches covered.">                if (j&gt;0 &amp;&amp; !(Character.isDigit(inputString.charAt(j - 1))) &amp;&amp; inputString.charAt(j-1)!=' ') {</span>
+<span class="fc" id="L75">                    stringBuilder.insert(j, &quot; &quot;);</span>
+<span class="fc" id="L76">                    inputString=stringBuilder.toString();</span>
+                    //j++;
+                }
+<span class="fc bfc" id="L79" title="All 6 branches covered.">                if (j&lt;inputString.length()-1 &amp;&amp; !(Character.isDigit(inputString.charAt(j + 1))) &amp;&amp; inputString.charAt(j+1)!=' ') {</span>
+<span class="fc" id="L80">                    stringBuilder.insert(j + 1, &quot; &quot;);</span>
+<span class="fc" id="L81">                    inputString=stringBuilder.toString();</span>
+                }
+            }
+        }
+
+<span class="fc" id="L86">        return stringBuilder.toString();</span>
+    }
+
+    /**
+     * Rimuove gli spazi e la parola &quot;no&quot; dalla stringa di input.
+     *
+     * @param inputString La stringa di input.
+     * @return La stringa di input senza spazi e senza la parola &quot;no&quot;.
+     */
+    private static String removeSpacesAndNoFromRightString(String inputString) {
+        // Rimuove gli spazi e la parola &quot;no&quot;
+<span class="fc" id="L97">        return inputString.replaceAll(&quot;\\s+|no&quot;, &quot;&quot;);</span>
+    }
+
+    /**
+     * Trasforma una stringa in camel case.
+     *
+     * @param inputString La stringa di input.
+     * @return La stringa di input trasformata in camel case.
+     */
+    private static String toCamelCase(String inputString) {
+<span class="fc" id="L107">        String[] words = inputString.split(&quot;\\s+&quot;);</span>
+<span class="fc" id="L108">        StringBuilder camelCaseString = new StringBuilder(words[0].toLowerCase());</span>
+
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        for (int i = 1; i &lt; words.length; i++) {</span>
+<span class="fc" id="L111">            camelCaseString.append(words[i].substring(0, 1).toUpperCase()).append(words[i].substring(1).toLowerCase());</span>
+        }
+
+<span class="fc" id="L114">        return camelCaseString.toString();</span>
+    }
+
+
+    private static int addEmptyStringsToMinorList(List&lt;String&gt; listOfLeftStrings, List&lt;String&gt; listOfRightStrings){
+<span class="fc" id="L119">        int sizeListLeft=listOfLeftStrings.size();</span>
+<span class="fc" id="L120">        int sizeListRight=listOfRightStrings.size();</span>
+<span class="fc" id="L121">        int biggerList=2;</span>
+<span class="fc" id="L122">        int differenza=0;</span>
+<span class="fc" id="L123">        int max=listOfLeftStrings.size();</span>
+
+        //capisci quale è la lista più grande
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if(sizeListRight&gt;sizeListLeft) {</span>
+<span class="fc" id="L127">            biggerList = 1;</span>
+<span class="fc" id="L128">            max= sizeListRight;</span>
+<span class="fc" id="L129">            differenza=max-sizeListLeft;</span>
+        }
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        else if(sizeListRight&lt;sizeListLeft){</span>
+<span class="fc" id="L132">            differenza=max-sizeListRight;</span>
+        }
+
+        //aggiunge le stringhe nella lista più corta
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        if(biggerList==1){</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">            for (int i=0; i&lt;differenza; i++)</span>
+<span class="fc" id="L138">                listOfLeftStrings.add(&quot;&quot;);</span>
+        }
+        else{
+<span class="fc bfc" id="L141" title="All 2 branches covered.">            for (int i=0; i&lt;differenza; i++)</span>
+<span class="fc" id="L142">                listOfRightStrings.add(&quot;&quot;);</span>
+        }
+<span class="fc" id="L144">        return max;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

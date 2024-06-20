@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VerifyOrdinatedString.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Unnamed Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.example.Hw2</a> &gt; <span class="el_source">VerifyOrdinatedString.java</span></div><h1>VerifyOrdinatedString.java</h1><pre class="source lang-java linenums">package org.example.Hw2;
+/**
+ * La classe VerifyOrdinatedString, è stata creata manualmente, fornisce un metodo per verificare ed estrarre sottostringhe in base agli indici specificati.
+ */
+<span class="nc" id="L5">public class VerifyOrdinatedString {</span>
+    /**
+     * Verifica ed estrae una sottostringa dalla stringa fornita in base agli indici specificati.
+     *
+     * @param str            La stringa di input.
+     * @param firstIndex L'indice di inizio della sottostringa.
+     * @param lastIndex  L'indice di fine della sottostringa.
+     * @return La sottostringa verificata.
+     * @throws IllegalArgumentException Se l'input è invalido (stringa vuota, null, indici non validi).
+     */
+    public static String verifyOrdinatedString(String str, int firstIndex, int lastIndex) {
+<span class="fc bfc" id="L16" title="All 10 branches covered.">        if (str==null || str.isEmpty() || firstIndex &gt;= lastIndex || firstIndex * -1 &gt;= lastIndex || lastIndex &gt; str.length()) {</span>
+<span class="fc" id="L17">            throw new IllegalArgumentException(&quot;Input non valido firstIndex:&quot;+firstIndex+&quot;, lastIndex: &quot;+lastIndex);</span>
+        }
+
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        if (firstIndex &lt; 0 ) {</span>
+            // Se firstIndex è un numero negativo
+<span class="fc" id="L22">            String subString = str.substring(firstIndex*(-1), lastIndex);</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">            if(isPalindrome(str, subString))</span>
+<span class="fc" id="L24">                return subString;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        } else if (firstIndex % 2 == 0) {</span>
+            // Se firstIndex è positivo ed è un numero pari
+<span class="fc" id="L27">            String subString=str.substring(firstIndex, lastIndex);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            if(isStringSorted(str, subString))</span>
+<span class="fc" id="L29">                return subString;</span>
+<span class="fc" id="L30">        } else {</span>
+            // Se firstIndex è positivo ed è un numero dispari
+<span class="fc" id="L32">            String subString=str.substring(firstIndex, lastIndex);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            if(isStringSortedReverse(str, subString))</span>
+<span class="fc" id="L34">                return subString;</span>
+        }
+<span class="fc" id="L36">        return str;</span>
+    }
+
+    /**
+     * Verifica se la sottostringa data è ordinata in ordine crescente.
+     *
+     * @param subStr La sottostringa da verificare.
+     * @return True se la sottostringa è ordinata; false altrimenti.
+     */
+    private static boolean isStringSorted(String str, String subStr) {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        for (int i = 1; i &lt; subStr.length(); i++) {</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (subStr.charAt(i - 1) &gt; subStr.charAt(i)) {</span>
+<span class="fc" id="L48">                return false;</span>
+            }
+        }
+<span class="fc" id="L51">        return true;</span>
+    }
+
+    /**
+     * Verifica se la sottostringa data è ordinata in ordine decrescente.
+     *
+     * @param subStr La sottostringa da verificare.
+     * @return True se la sottostringa è ordinata al contrario; false altrimenti.
+     */
+    private static boolean isStringSortedReverse(String str, String subStr) {
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        for (int i = 1; i &lt; subStr.length(); i++) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (subStr.charAt(i - 1) &lt; subStr.charAt(i)) {</span>
+<span class="fc" id="L63">                return false;</span>
+            }
+        }
+<span class="fc" id="L66">        return true;</span>
+    }
+
+    /**
+     * Verifica se la sottostringa data è un palindromo.
+     *
+     * @param subStr La sottostringa da verificare.
+     * @return True se la sottostringa è un palindromo; false altrimenti.
+     */
+    private static boolean isPalindrome(String str, String subStr) {
+<span class="fc" id="L76">        return subStr.contentEquals(new StringBuilder(subStr).reverse());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

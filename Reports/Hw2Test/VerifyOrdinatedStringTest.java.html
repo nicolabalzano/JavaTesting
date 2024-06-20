@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VerifyOrdinatedStringTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Unnamed Coverage Results</a> &gt; <a href="index.source.html" class="el_package">Hw2Test</a> &gt; <span class="el_source">VerifyOrdinatedStringTest.java</span></div><h1>VerifyOrdinatedStringTest.java</h1><pre class="source lang-java linenums">package Hw2Test;
+
+import net.jqwik.api.*;
+import net.jqwik.api.statistics.Histogram;
+import net.jqwik.api.statistics.Statistics;
+import net.jqwik.api.statistics.StatisticsReport;
+import org.example.Hw2.VerifyOrdinatedString;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+<span class="fc" id="L20">public class VerifyOrdinatedStringTest {</span>
+
+<span class="nc" id="L22">    static class Utils {</span>
+        static class InputObject {
+            private final String baseString;
+            private final String injectedString;
+            private final int firstIndex;
+
+<span class="fc" id="L28">            public InputObject(String string, String ordinatedString, int firstIndex) {</span>
+<span class="fc" id="L29">                this.baseString = string;</span>
+<span class="fc" id="L30">                this.injectedString = ordinatedString;</span>
+<span class="fc" id="L31">                this.firstIndex = firstIndex;</span>
+<span class="fc" id="L32">            }</span>
+
+            public String getInjectedString() {
+<span class="fc" id="L35">                return injectedString;</span>
+            }
+
+            public int getFirstIndex() {
+<span class="fc" id="L39">                return firstIndex;</span>
+            }
+
+            public String getBaseString() {
+<span class="fc" id="L43">                return baseString;</span>
+            }
+
+            @Override
+            public String toString() {
+<span class="fc" id="L48">                return &quot;InputObject{&quot; +</span>
+                        &quot;string='&quot; + baseString + '\'' +
+                        &quot;, injectedString='&quot; + injectedString + '\'' +
+                        &quot;, firstIndex=&quot; + firstIndex +
+                        '}';
+            }
+        }
+
+        static boolean checkStringLength(int firstIndex, int stringLength) {
+            //altrimenti  (-2147483648) * -1  lanciava eccezione quando cercava di verificarlo tramite il filter
+<span class="fc" id="L58">            long unsignedFirstIndex = Integer.toUnsignedLong(firstIndex);</span>
+<span class="fc" id="L59">            long unsignedStringLength = Integer.toUnsignedLong(stringLength);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            return unsignedFirstIndex &lt; unsignedStringLength;</span>
+        }
+
+        static boolean checkNotOrderedString(String inputString, int fristIndex) {
+<span class="fc" id="L64">            String subStr=null;</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            if(fristIndex&lt;=-1)</span>
+<span class="fc" id="L66">                subStr = inputString.substring(fristIndex*-1);</span>
+            else
+<span class="fc" id="L68">                subStr = inputString.substring(fristIndex);</span>
+<span class="fc" id="L69">            boolean isOrdered = false, isReverseOrdered = false;</span>
+            //check ordered String
+<span class="fc" id="L71">            char[] charArray = subStr.toCharArray();</span>
+<span class="fc" id="L72">            Arrays.sort(charArray);</span>
+<span class="fc" id="L73">            String orderedString = String.valueOf(charArray);</span>
+<span class="fc" id="L74">            isOrdered = subStr.equals(orderedString);</span>
+            //check reverse ordered String
+<span class="fc" id="L76">            isReverseOrdered = subStr.contentEquals(new StringBuilder(orderedString).reverse());</span>
+<span class="fc bfc" id="L77" title="All 4 branches covered.">            return !isOrdered &amp;&amp; !isReverseOrdered;</span>
+        }
+    }
+
+    @Nested
+    @DisplayName(&quot;Unhappy path tests&quot;)
+<span class="fc" id="L83">    class UnhappyPathTests {</span>
+        //ILLEGAL INPUT
+        @ParameterizedTest
+        @MethodSource(&quot;illeagalInputProvider&quot;)
+        @DisplayName(&quot;illegal input/example based&quot;)
+        void illegalInput(String inputString, int firstIndex, int lastIndex) {
+<span class="pc" id="L89">            assertThrows(IllegalArgumentException.class, () -&gt; VerifyOrdinatedString.verifyOrdinatedString(inputString, firstIndex, lastIndex));</span>
+<span class="fc" id="L90">        }</span>
+
+        static Stream&lt;Arguments&gt; illeagalInputProvider() {
+<span class="fc" id="L93">            return Stream.of(</span>
+                    //T1
+<span class="fc" id="L95">                    Arguments.of(&quot;aaa&quot;, 2, 2),</span>
+                    //T2
+<span class="fc" id="L97">                    Arguments.of(&quot;aaa&quot;, -2, 2),</span>
+                    //T3
+<span class="fc" id="L99">                    Arguments.of(&quot;aaa&quot;, 1, 4),</span>
+                    //T4
+<span class="fc" id="L101">                    Arguments.of(&quot;&quot;, 0, 0),</span>
+                    //T5
+<span class="fc" id="L103">                    Arguments.of(null, 0, 0)</span>
+            );
+        }
+    }
+
+    @Group
+    @Label(&quot;Happy path tests&quot;)
+<span class="fc" id="L110">    class HappyPathTests {</span>
+
+        private Arbitrary&lt;String&gt; getArbitraryString(){
+<span class="fc" id="L113">            return Arbitraries.strings().withCharRange('!', '~').ofMinLength(0).ofMaxLength(50);</span>
+        }
+
+        private Arbitrary&lt;String&gt; getInjectedString(){
+<span class="fc" id="L117">            return Arbitraries.strings().withCharRange('!', '~').ofMinLength(1).ofMaxLength(50);</span>
+        }
+
+        //T6
+        @Provide
+        private Arbitrary&lt;Utils.InputObject&gt; evenIntegerProvider() {
+<span class="fc" id="L123">            Arbitrary&lt;String&gt; arbitraryString = getArbitraryString();</span>
+<span class="fc" id="L124">            Arbitrary&lt;String&gt; injectedString = getInjectedString();</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">            Arbitrary&lt;Integer&gt; firstIndex = Arbitraries.integers().greaterOrEqual(0).filter(n -&gt; n % 2 == 0);</span>
+<span class="fc" id="L126">            return Combinators.combine(arbitraryString, injectedString, firstIndex).as(Utils.InputObject::new)</span>
+<span class="fc" id="L127">                    .filter(o -&gt; Utils.checkStringLength(o.getFirstIndex(), o.getBaseString().length()));</span>
+        }
+
+        @Label(&quot;ordered string with even firstIndex&quot;)
+        @Property(tries = 1000, edgeCases = EdgeCasesMode.FIRST)
+        @Report(Reporting.GENERATED)
+        @StatisticsReport(format = Histogram.class)
+        void orderedString(@ForAll(&quot;evenIntegerProvider&quot;) Utils.InputObject o) {
+<span class="fc" id="L135">            StringBuilder inputString = new StringBuilder();</span>
+<span class="fc" id="L136">            String injectedString = o.getInjectedString();</span>
+
+            // Aggiungi i caratteri dalla stringa originale fino a firstIndex
+<span class="fc" id="L139">            inputString.append(o.getBaseString(), 0, o.getFirstIndex());</span>
+
+            // Ordina e Aggiungi il contenuto di manipulatedString
+<span class="fc" id="L142">            char[] charArray = injectedString.toCharArray();</span>
+<span class="fc" id="L143">            Arrays.sort(charArray);</span>
+<span class="fc" id="L144">            injectedString = String.valueOf(charArray);</span>
+<span class="fc" id="L145">            inputString.append(injectedString);</span>
+
+            // Aggiungi i caratteri rimanenti dalla stringa originale dopo firstIndex
+<span class="fc" id="L148">            inputString.append(o.getBaseString(), o.getFirstIndex(), o.getBaseString().length());</span>
+<span class="fc" id="L149">            int lastIndex = o.getFirstIndex() + injectedString.length();</span>
+
+<span class="fc" id="L151">            Statistics.label(&quot;firstIndex: &quot;).collect(o.getFirstIndex());</span>
+
+<span class="fc" id="L153">            assertEquals(VerifyOrdinatedString.verifyOrdinatedString(inputString.toString(), o.getFirstIndex(), lastIndex), injectedString);</span>
+<span class="fc" id="L154">        }</span>
+
+        //T7
+        @Provide
+        private Arbitrary&lt;Utils.InputObject&gt; oddIntegerProvider() {
+<span class="fc" id="L159">            Arbitrary&lt;String&gt; arbitraryString = getArbitraryString();</span>
+<span class="fc" id="L160">            Arbitrary&lt;String&gt; injectedString = getInjectedString();</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">            Arbitrary&lt;Integer&gt; firstIndex = Arbitraries.integers().greaterOrEqual(0).filter(n -&gt; n % 2 == 1);</span>
+<span class="fc" id="L162">            return Combinators.combine(arbitraryString, injectedString, firstIndex).as(Utils.InputObject::new)</span>
+<span class="fc" id="L163">                    .filter(o -&gt; Utils.checkStringLength(o.getFirstIndex(), o.getBaseString().length()));</span>
+        }
+
+        @Property(tries = 1000, edgeCases = EdgeCasesMode.FIRST)
+        @Report(Reporting.GENERATED)
+        @Label(&quot;descending ordered string with odd firstIndex&quot;)
+        @StatisticsReport(format = Histogram.class)
+        void reverseOrderedString(@ForAll(&quot;oddIntegerProvider&quot;) Utils.InputObject o) {
+<span class="fc" id="L171">            StringBuilder inputString = new StringBuilder();</span>
+<span class="fc" id="L172">            String mainpuletedString = o.getInjectedString();</span>
+
+            // Aggiungi i caratteri dalla stringa originale fino a firstIndex
+<span class="fc" id="L175">            inputString.append(o.getBaseString(), 0, o.getFirstIndex());</span>
+
+            // Ordina e Aggiungi il contenuto di manipulatedString
+<span class="fc" id="L178">            char[] charArray = mainpuletedString.toCharArray();</span>
+<span class="fc" id="L179">            Arrays.sort(charArray);</span>
+<span class="fc" id="L180">            mainpuletedString = String.valueOf(charArray);</span>
+<span class="fc" id="L181">            mainpuletedString = new StringBuilder(String.valueOf(charArray)).reverse().toString();</span>
+<span class="fc" id="L182">            inputString.append(mainpuletedString);</span>
+
+            // Aggiungi i caratteri rimanenti dalla stringa originale dopo firstIndex
+<span class="fc" id="L185">            inputString.append(o.getBaseString(), o.getFirstIndex(), o.getBaseString().length());</span>
+<span class="fc" id="L186">            int lastIndex = o.getFirstIndex() + mainpuletedString.length();</span>
+
+<span class="fc" id="L188">            Statistics.label(&quot;firstIndex: &quot;).collect(o.getFirstIndex());</span>
+
+<span class="fc" id="L190">            assertEquals(VerifyOrdinatedString.verifyOrdinatedString(inputString.toString(), o.getFirstIndex(), lastIndex), mainpuletedString);</span>
+<span class="fc" id="L191">        }</span>
+
+
+        //T8
+        @Provide
+        private Arbitrary&lt;Utils.InputObject&gt; negativeIntegerPalindromeProvider() {
+<span class="fc" id="L197">            Arbitrary&lt;String&gt; arbitraryString = getArbitraryString();</span>
+<span class="fc" id="L198">            Arbitrary&lt;String&gt; injectedString = getInjectedString();</span>
+<span class="fc" id="L199">            Arbitrary&lt;Integer&gt; firstIndex = Arbitraries.integers().lessOrEqual(-1);</span>
+<span class="fc" id="L200">            return Combinators.combine(arbitraryString, injectedString, firstIndex).as(Utils.InputObject::new)</span>
+<span class="fc" id="L201">                    .filter(o -&gt; Utils.checkStringLength(o.getFirstIndex() * -1, o.getBaseString().length()));</span>
+        }
+
+        @Property(tries = 1000, edgeCases = EdgeCasesMode.FIRST)
+        @Report(Reporting.GENERATED)
+        @Label(&quot;even palindrome string with negative firstIndex&quot;)
+        @StatisticsReport(format = Histogram.class)
+        void evenPalindromeString(@ForAll(&quot;negativeIntegerPalindromeProvider&quot;) Utils.InputObject o) {
+<span class="fc" id="L209">            StringBuilder inputString = new StringBuilder();</span>
+<span class="fc" id="L210">            String injectedString = o.getInjectedString();</span>
+<span class="fc" id="L211">            int firstIndexPositive = o.getFirstIndex() * -1;</span>
+
+            // Aggiungi i caratteri dalla stringa originale fino a firstIndex
+<span class="fc" id="L214">            inputString.append(o.getBaseString(), 0, firstIndexPositive);</span>
+
+            //Crea la stringa palindroma e aggiungila alla stringa di input
+<span class="fc" id="L217">            String reverseString = new StringBuilder(injectedString).reverse().toString();</span>
+<span class="fc" id="L218">            injectedString += reverseString;</span>
+<span class="fc" id="L219">            inputString.append(injectedString);</span>
+
+            // Aggiungi i caratteri rimanenti dalla stringa originale dopo firstIndex
+<span class="fc" id="L222">            inputString.append(o.getBaseString(), firstIndexPositive, o.getBaseString().length());</span>
+<span class="fc" id="L223">            int lastIndex = firstIndexPositive + injectedString.length();</span>
+
+<span class="fc" id="L225">            Statistics.label(&quot;firstIndex: &quot;).collect(o.getFirstIndex());</span>
+
+<span class="fc" id="L227">            assertEquals(VerifyOrdinatedString.verifyOrdinatedString(inputString.toString(), o.getFirstIndex(), lastIndex), injectedString);</span>
+<span class="fc" id="L228">        }</span>
+
+        //T9
+        @Property(tries = 1000, edgeCases = EdgeCasesMode.FIRST)
+        @Report(Reporting.GENERATED)
+        @Label(&quot;odd palindrome string with negative firstIndex&quot;)
+        @StatisticsReport(format = Histogram.class)
+        void oddPalindromeString(@ForAll(&quot;negativeIntegerPalindromeProvider&quot;) Utils.InputObject o) {
+<span class="fc" id="L236">            StringBuilder inputString = new StringBuilder();</span>
+<span class="fc" id="L237">            String injectedString = o.getInjectedString();</span>
+<span class="fc" id="L238">            int firstIndexPositive = o.getFirstIndex() * -1;</span>
+
+            // Aggiungi i caratteri dalla stringa originale fino a firstIndex
+<span class="fc" id="L241">            inputString.append(o.getBaseString(), 0, firstIndexPositive);</span>
+
+            //Crea la stringa palindroma e aggiungila alla stringa di input
+<span class="fc" id="L244">            String reverseString = new StringBuilder(injectedString.substring(0, injectedString.length() - 1)).reverse().toString();</span>
+<span class="fc" id="L245">            injectedString += reverseString;</span>
+<span class="fc" id="L246">            inputString.append(injectedString);</span>
+
+            // Aggiungi i caratteri rimanenti dalla stringa originale dopo firstIndex
+<span class="fc" id="L249">            inputString.append(o.getBaseString(), firstIndexPositive, o.getBaseString().length());</span>
+<span class="fc" id="L250">            int lastIndex = firstIndexPositive + injectedString.length();</span>
+
+<span class="fc" id="L252">            Statistics.label(&quot;firstIndex: &quot;).collect(o.getFirstIndex());</span>
+
+<span class="fc" id="L254">            assertEquals(VerifyOrdinatedString.verifyOrdinatedString(inputString.toString(), o.getFirstIndex(), lastIndex), injectedString);</span>
+<span class="fc" id="L255">        }</span>
+
+        //T10
+        @Provide
+        private Arbitrary&lt;Utils.InputObject&gt; noSpecialSubStringProvider() {
+<span class="fc" id="L260">            Arbitrary&lt;String&gt; arbitraryString = Arbitraries.strings().alpha().uniqueChars().ofMinLength(0).ofMaxLength(20);</span>
+<span class="fc" id="L261">            Arbitrary&lt;String&gt; injectedString = Arbitraries.strings().ofLength(0);</span>
+<span class="fc" id="L262">            Arbitrary&lt;Integer&gt; firstIndex = Arbitraries.integers();</span>
+<span class="fc" id="L263">            return Combinators.combine(arbitraryString, injectedString, firstIndex).as(Utils.InputObject::new)</span>
+<span class="fc" id="L264">                    .filter(o -&gt;</span>
+<span class="fc bfc" id="L265" title="All 2 branches covered.">                            (Utils.checkStringLength(o.getFirstIndex(), o.getBaseString().length()) ||</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">                                    Utils.checkStringLength(o.getFirstIndex()*-1, o.getBaseString().length())</span>
+                            ) &amp;&amp;
+<span class="fc bfc" id="L268" title="All 2 branches covered.">                                    (Utils.checkNotOrderedString(o.getBaseString(), o.getFirstIndex()))</span>
+                    );
+        }
+
+        @Property(tries = 1000, edgeCases = EdgeCasesMode.FIRST)
+        @Report(Reporting.GENERATED)
+        @Label(&quot;other cases, no ordered or palindrome string&quot;)
+        @StatisticsReport(format = Histogram.class)
+        void noSpecialSubString(@ForAll(&quot;noSpecialSubStringProvider&quot;) Utils.InputObject o) {
+<span class="fc" id="L277">            Statistics.label(&quot;firstIndex: &quot;).collect(o.getFirstIndex());</span>
+
+<span class="fc" id="L279">            assertEquals(VerifyOrdinatedString.verifyOrdinatedString(o.getBaseString(), o.getFirstIndex(), o.getBaseString().length()), o.getBaseString());</span>
+<span class="fc" id="L280">        }</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

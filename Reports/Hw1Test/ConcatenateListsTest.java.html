@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConcatenateListsTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Unnamed Coverage Results</a> &gt; <a href="index.source.html" class="el_package">Hw1Test</a> &gt; <span class="el_source">ConcatenateListsTest.java</span></div><h1>ConcatenateListsTest.java</h1><pre class="source lang-java linenums">package Hw1Test;
+
+import org.example.Hw1.ConcatenateLists;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+
+<span class="fc" id="L16">public class ConcatenateListsTest {</span>
+    @Nested
+<span class="fc" id="L18">    class HappyPathTests {</span>
+        @ParameterizedTest
+        @MethodSource(&quot;happyDifferentListsProvider&quot;)
+        @DisplayName(&quot;happy different length between lists&quot;)
+        void happyDifferentListsOfStrings(List&lt;String&gt; listOfConcatenated, List&lt;String&gt; listLeft, List&lt;String&gt; listRight) {
+<span class="fc" id="L23">            assertEquals(listOfConcatenated, ConcatenateLists.concatenateLists(listLeft, listRight));</span>
+<span class="fc" id="L24">        }</span>
+
+        static Stream&lt;Arguments&gt; happyDifferentListsProvider() {
+<span class="fc" id="L27">            return Stream.of(</span>
+<span class="fc" id="L28">                    Arguments.of(null, List.of(&quot;sinistra&quot;, &quot;sinistra sinistra&quot;), null),            //T1</span>
+<span class="fc" id="L29">                    Arguments.of(null, null, List.of(&quot;destra&quot;, &quot;destra destra&quot;)),                    //T2</span>
+<span class="fc" id="L30">                    Arguments.of(List.of(&quot;destra&quot;, &quot;sinistradestra&quot;), List.of(&quot;&quot;, &quot;sinistra&quot;), List.of(&quot;destra&quot;, &quot;destra&quot;)),  //T3</span>
+<span class="fc" id="L31">                    Arguments.of(List.of(&quot;sinistradestra&quot;, &quot;sinistra&quot;), List.of(&quot;sinistra&quot;, &quot;sinistra&quot;), List.of(&quot;destra&quot;, &quot;&quot;)),  //T4</span>
+<span class="fc" id="L32">                    Arguments.of(List.of(&quot;sinistra&quot;, &quot;sinistra&quot;), List.of(&quot;sinistra&quot;, &quot;sinistra&quot;), List.of()),                    //T5</span>
+<span class="fc" id="L33">                    Arguments.of(List.of(&quot;destra&quot;, &quot;destra&quot;), List.of(), List.of(&quot;destra&quot;, &quot;destra&quot;)),                    //T6</span>
+<span class="fc" id="L34">                    Arguments.of(List.of(&quot;sinistradestra&quot;), List.of(&quot;sinistra&quot;), List.of(&quot;destra&quot;)),                    //T7</span>
+<span class="fc" id="L35">                    Arguments.of(List.of(&quot;sinistra 1destra&quot;, &quot;1 sinistradestra&quot;), List.of(&quot;sinistra1&quot;, &quot;1sinistra&quot;), List.of(&quot;destra&quot;, &quot;destra&quot;)),                    //T8</span>
+<span class="fc" id="L36">                    Arguments.of(List.of(&quot;sinistradestra&quot;, &quot;sinistradestra&quot;), List.of(&quot;sinistra&quot;, &quot;sinistra&quot;), List.of(&quot;destrano&quot;, &quot;des tra&quot;)),                    //T9</span>
+<span class="fc" id="L37">                    Arguments.of(List.of(&quot;sinistradestra&quot;, &quot;destra&quot;), List.of(&quot;sinistra&quot;), List.of(&quot;destra&quot;, &quot;destra&quot;)),             //T10</span>
+<span class="fc" id="L38">                    Arguments.of(List.of(&quot;sinistradestra&quot;, &quot;sinistra&quot;), List.of(&quot;sinistra&quot;, &quot;sinistra&quot;), List.of(&quot;destra&quot;)),                    //T11</span>
+<span class="fc" id="L39">                    Arguments.of(List.of(&quot;sinistradestradestra&quot;), List.of(&quot;sinistra&quot;), List.of(&quot;destradestra&quot;)),                 //T12</span>
+<span class="fc" id="L40">                    Arguments.of(List.of(&quot;sinistraDestradestra&quot;), List.of(&quot;sinistra &quot;), List.of(&quot;destradestra&quot;)),  //T13</span>
+<span class="fc" id="L41">                    Arguments.of(List.of(&quot;1destra&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;, &quot;11&quot;, &quot;12&quot;, &quot;13&quot;, &quot;14&quot;), List.of(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;, &quot;11&quot;, &quot;12&quot;, &quot;13&quot;, &quot;14&quot;), List.of(&quot;destra&quot;)), //T14</span>
+<span class="fc" id="L42">                    Arguments.of(List.of(&quot;sinistra1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;, &quot;11&quot;, &quot;12&quot;, &quot;13&quot;, &quot;14&quot;), List.of(&quot;sinistra&quot;), List.of(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;, &quot;11&quot;, &quot;12&quot;, &quot;13&quot;, &quot;14&quot;)),  //15</span>
+<span class="fc" id="L43">                    Arguments.of(List.of(&quot;sinistra- 1destra&quot;, &quot;sinistra 1 -destra&quot;, &quot;sinistra- 1 -destra&quot;), List.of(&quot;sinistra-1&quot;, &quot;sinistra 1-&quot;, &quot;sinistra-1-&quot; ), List.of(&quot;destra&quot;, &quot;destra&quot;, &quot;destra&quot;)),  //T18</span>
+<span class="fc" id="L44">                    Arguments.of(List.of(&quot;sinistra! 1destra&quot;, &quot;sinistra 1 !destra&quot;, &quot;sinistra! 1 !destra&quot;), List.of(&quot;sinistra!1&quot;, &quot;sinistra 1!&quot;, &quot;sinistra!1!&quot; ), List.of(&quot;destra&quot;, &quot;destra&quot;, &quot;destra&quot;)),  //T19</span>
+<span class="fc" id="L45">                    Arguments.of(List.of(&quot;sinistra@ 1destra&quot;, &quot;sinistra 1 @destra&quot;, &quot;sinistra@ 1 @destra&quot;), List.of(&quot;sinistra@1&quot;, &quot;sinistra 1@&quot;, &quot;sinistra@1@&quot; ), List.of(&quot;destra&quot;, &quot;destra&quot;, &quot;destra&quot;)),  //T20</span>
+<span class="fc" id="L46">                    Arguments.of(List.of(&quot;sinistradestra&quot;, &quot;sinistradestra&quot;, &quot;sinistradestra&quot;, &quot;sinistradestra&quot;), List.of(&quot;sinistra&quot;, &quot;sinistra&quot;, &quot;sinistra&quot;, &quot;sinistra&quot;), List.of(&quot;destra no&quot;, &quot;no destra&quot;, &quot;nodestra&quot;, &quot;desnotra&quot;)),  //T21</span>
+<span class="fc" id="L47">                    Arguments.of(List.of(&quot;s 1&quot;+String.valueOf(Integer.MAX_VALUE)+&quot;destra&quot;), List.of(&quot;s1&quot;+String.valueOf(Integer.MAX_VALUE)), List.of(&quot;destra&quot;)),        //T22</span>
+<span class="fc" id="L48">                    Arguments.of(List.of(&quot;sinistra 1 destra&quot;),List.of(&quot;sinistra1 &quot;), List.of(&quot;destra&quot;)),                     //T23</span>
+<span class="fc" id="L49">                    Arguments.of(List.of(&quot;sinistra@sinistraSinistradestradestradestra&quot;),List.of(&quot;sinistra @sinistra sinistra&quot;), List.of(&quot;destradestradestra&quot;)),                     //T24</span>
+<span class="fc" id="L50">                    Arguments.of(List.of(&quot;sinistra1SinistraSinistradestradestradestra&quot;),List.of(&quot;sinistra 1sinistra sinistra&quot;), List.of(&quot;destradestradestra&quot;))                      //T25</span>
+            );
+        }
+
+
+
+
+    }
+    @Nested
+<span class="fc" id="L59">    class UnhappyPathTests{</span>
+        @ParameterizedTest
+        @MethodSource(&quot;unhappyDifferentListsProvider&quot;)
+        @DisplayName(&quot;unhappy different length between lists&quot;)
+        void unhappyDifferentListsOfStrings(List&lt;String&gt; listOfConcatenated, List&lt;String&gt; listLeft, List&lt;String&gt; listRight) {
+<span class="fc" id="L64">            assertEquals(listOfConcatenated, ConcatenateLists.concatenateLists(listLeft, listRight));</span>
+<span class="fc" id="L65">        }</span>
+        static Stream&lt;Arguments&gt; unhappyDifferentListsProvider() {
+<span class="fc" id="L67">            return Stream.of(</span>
+<span class="fc" id="L68">                    Arguments.of(null, List.of(&quot;sinistra&quot;, &quot;sinistra sinistra&quot;), null),            //T1</span>
+<span class="fc" id="L69">                    Arguments.of(null, null, List.of(&quot;destra&quot;, &quot;destra destra&quot;))                    //T2</span>
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource(&quot;illegalArugumentListsProvider&quot;)
+        @DisplayName(&quot;more than max number of strings in lists&quot;)
+        void moreThanMaxNumberOfStringsInLists(List&lt;String&gt; listLeft, List&lt;String&gt; listRight) {
+<span class="pc" id="L77">            assertThrows(IllegalArgumentException.class, () -&gt; ConcatenateLists.concatenateLists(listLeft, listRight));</span>
+<span class="fc" id="L78">        }</span>
+
+        public static Stream&lt;Arguments&gt; illegalArugumentListsProvider() {
+
+<span class="fc" id="L82">            return Stream.of(</span>
+<span class="fc" id="L83">                    Arguments.of(List.of(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;, &quot;11&quot;, &quot;12&quot;, &quot;13&quot;, &quot;14&quot;, &quot;15&quot;), List.of(&quot;destra&quot;)),  //T16</span>
+<span class="fc" id="L84">                    Arguments.of(List.of(&quot;sinistra&quot;), List.of(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;, &quot;11&quot;, &quot;12&quot;, &quot;13&quot;, &quot;14&quot;, &quot;15&quot;))   //17</span>
+            );
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
